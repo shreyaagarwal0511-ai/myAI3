@@ -11,6 +11,7 @@ import { SYSTEM_PROMPT } from "@/prompts";
 import { isContentFlagged } from "@/lib/moderation";
 import { webSearch } from "./tools/web-search";
 import { vectorDatabaseSearch } from "./tools/search-vector-database";
+import { searchPinecone } from '@/lib/pinecone';
 
 export const maxDuration = 30;
 
@@ -65,7 +66,7 @@ export async function POST(req: Request) {
       // Call the tool implementation directly
       // vectorDatabaseSearch returns text that already includes <results>...</results>
       // (coming from your Pinecone search context builder)
-      const toolResult = await vectorDatabaseSearch.execute({ query: latestUserText } as any);
+const toolResult = await searchPinecone(latestUserText);
       ragContext = typeof toolResult === "string" ? toolResult : JSON.stringify(toolResult);
     }
   } catch (e) {
